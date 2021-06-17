@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "amazingmod",
+  "version": "${version}",
+
+  "name": "AmazingMod",
+  "description": "tbw",
+  "authors": [
+    "Velnias75"
+  ],
+  "contact": {
+    "issues": "https://github.com/velnias75/PandaCrossing/issues",
+    "sources": "https://github.com/velnias75/PandaCrossing"
+  },
+
+  "license": "GPL-3.0-or-later",
+  "icon": "assets/panda_crossing/panda_crossing.png",
+
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "de.rangun.amazing.AmazingMod"
+    ]
+  },
+  "mixins": [
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "recommends": {
+    "cloth-config2": ">=4.11.26"
+  },
+  "suggests": {
+    "modmenu": ">=2.0.0"
+  },
+  "custom": {
+    "modmenu": {
+        "links": {
+            "modmenu.discord": "https://discord.me/agoramc"
+        }
+    }
+}
+}
