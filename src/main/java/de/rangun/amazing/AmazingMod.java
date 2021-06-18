@@ -19,14 +19,33 @@
 
 package de.rangun.amazing;
 
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.DISPATCHER;
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+
+import de.rangun.amazing.commands.MazeCommand;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.minecraft.network.MessageType;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
 public final class AmazingMod implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		// TODO Auto-generated method stub
-		
+
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+
+			final MutableText welcomeMsg = new LiteralText("Welcome to AmazingMod, ").formatted(Formatting.AQUA)
+					.append(new LiteralText(client.player.getDisplayName().asString()).formatted(Formatting.RED)
+							.append(new LiteralText(" :-)").formatted(Formatting.AQUA)));
+
+			client.inGameHud.addChatMessage(MessageType.SYSTEM, welcomeMsg, Util.NIL_UUID);
+		});
+
+		DISPATCHER.register(literal("maze").executes(new MazeCommand()));
 	}
 
 }
