@@ -7,3 +7,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+
+include 'fabric-mod'
+include 'spigot-plugin'

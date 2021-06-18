@@ -17,7 +17,7 @@
  * along with AmazingMod.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.amazing;
+package de.rangun.amazing.fabric;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.command.argument.BlockStateArgumentType.blockState;
@@ -26,7 +26,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
-import de.rangun.amazing.commands.MazeCommand;
+import de.rangun.amazing.fabric.commands.MazeCommand;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
