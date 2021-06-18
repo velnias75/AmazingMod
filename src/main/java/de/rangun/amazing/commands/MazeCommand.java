@@ -19,31 +19,38 @@
 
 package de.rangun.amazing.commands;
 
+import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static net.minecraft.block.Blocks.AIR;
-import static net.minecraft.block.Blocks.STONE;
+import static net.minecraft.command.argument.BlockStateArgumentType.getBlockState;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import de.rangun.amazing.maze.Maze;
-import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.minecraft.command.argument.BlockStateArgument;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public final class MazeCommand implements Command<FabricClientCommandSource> {
+public final class MazeCommand implements Command<ServerCommandSource> {
 
 	@Override
-	public int run(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+	public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
 
-		final Maze maze = new Maze(100, 150);
+		final int width = getInteger(context, "width");
+		final int length = getInteger(context, "length");
+		final int height = getInteger(context, "height");
+		final BlockStateArgument blockState = getBlockState(context, "material");
+
+		final Maze maze = new Maze(width, length);
 		final Vec3d pos = context.getSource().getPlayer().getPos();
 
 		maze.generate((x, y, b) -> {
-			for (int i = 0; i < 5; ++i) {
-				context.getSource().getWorld()
-						.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + i, pos.getZ() + y),
-								b ? STONE.getDefaultState() : AIR.getDefaultState());
+			for (int i = 0; i < height; ++i) {
+				context.getSource().getWorld().setBlockState(
+						new BlockPos(pos.getX() + x, pos.getY() + i, pos.getZ() + y),
+						b ? blockState.getBlockState() : AIR.getDefaultState());
 			}
 		});
 
