@@ -1,0 +1,5 @@
+name: AmazingPlugin
+main: de.rangun.amazing.spigot.AmazingPlugin
+version: 0.0-SNAPSHOT
+api-version: 1.17
+commands:

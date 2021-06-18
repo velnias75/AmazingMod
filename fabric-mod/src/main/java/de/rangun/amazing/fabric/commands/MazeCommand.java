@@ -17,7 +17,7 @@
  * along with AmazingMod.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.amazing.commands;
+package de.rangun.amazing.fabric.commands;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static net.minecraft.block.Blocks.AIR;

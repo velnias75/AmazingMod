@@ -19,7 +19,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "de.rangun.amazing.AmazingMod"
+      "de.rangun.amazing.fabric.AmazingMod"
     ]
   },
   "mixins": [

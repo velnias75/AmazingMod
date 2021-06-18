@@ -4,6 +4,10 @@ plugins {
 	id 'maven-publish'
 }
 
+group = projectGroup
+archivesBaseName = projectArchiveBaseName
+version = projectBaseVersion
+
 repositories {
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
@@ -159,7 +163,13 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}"}
-	}
+	}   
+}
+
+task spigotJar(type: Jar) {  
+    from(sourceSets.main.output) {  
+        exclude('de/rangun/amazing/fabric/**')
+    }  
 }
 
 // configure the maven publication
