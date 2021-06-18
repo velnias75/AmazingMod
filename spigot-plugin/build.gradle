@@ -2,6 +2,12 @@ plugins {
     id 'java-library' 
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+archivesBaseName = 'AmazingPlugin'
+version = '0.0-SNAPSHOT'
+
 repositories {
 	maven {
 		name 'Spigot'
@@ -12,4 +18,12 @@ repositories {
 }
 dependencies {
 	implementation 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+	implementation project(':fabric-mod')
+	
+}
+
+jar {
+    //from project.sourceSets.main.allSource
+    from project(":fabric-mod").sourceSets.main.java.srcDirs
+    exclude 'de/rangun/amazing/fabric/**'
 }
