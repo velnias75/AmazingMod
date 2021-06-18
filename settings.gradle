@@ -8,6 +8,4 @@ pluginManagement {
     }
 }
 
-
-include 'fabric-mod'
-include 'spigot-plugin'
+include 'fabric-mod', 'spigot-plugin'
