@@ -19,13 +19,19 @@
 
 package de.rangun.amazing;
 
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.DISPATCHER;
-import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
+import static net.minecraft.command.argument.BlockStateArgumentType.blockState;
+
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
 import de.rangun.amazing.commands.MazeCommand;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.network.MessageType;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
@@ -45,7 +51,21 @@ public final class AmazingMod implements ClientModInitializer {
 			client.inGameHud.addChatMessage(MessageType.SYSTEM, welcomeMsg, Util.NIL_UUID);
 		});
 
-		DISPATCHER.register(literal("maze").executes(new MazeCommand()));
+		CommandRegistrationCallback.EVENT.register((dispather,
+				dedicated) ->
+		dispather.register(literal("maze").then(
+				argument("width", integer()).then(argument("length", integer())
+						.then(argument("height", integer())
+								.then(argument("material", blockState())
+								.executes(new MazeCommand())))))));
+	}
+
+	private static <T> RequiredArgumentBuilder<ServerCommandSource, T> argument(String name, ArgumentType<T> type) {
+		return RequiredArgumentBuilder.argument(name, type);
+	}
+
+	public static LiteralArgumentBuilder<ServerCommandSource> literal(String name) {
+		return LiteralArgumentBuilder.literal(name);
 	}
 
 }
