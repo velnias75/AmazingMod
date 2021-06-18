@@ -20,7 +20,18 @@
 package de.rangun.amazing.spigot;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
+import org.bukkit.plugin.java.annotation.plugin.ApiVersion.Target;
+import org.bukkit.plugin.java.annotation.plugin.Description;
+import org.bukkit.plugin.java.annotation.plugin.Plugin;
+import org.bukkit.plugin.java.annotation.plugin.Website;
+import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
+@Plugin(name = "AmazingPlugin", version = "0.0-SNAPSHOT")
+@Description(value = "A plugin to generate mazes")
+@Website(value = "https://github.com/velnias75/AmazingModo")
+@ApiVersion(Target.DEFAULT)
+@Author(value = "Velnias75")
 public class AmazingPlugin extends JavaPlugin {
 
 	@Override

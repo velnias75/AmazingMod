@@ -4,13 +4,13 @@
   "version": "${version}",
 
   "name": "AmazingMod",
-  "description": "tbw",
+  "description": "A client mod to generate mazes",
   "authors": [
     "Velnias75"
   ],
   "contact": {
-    "issues": "https://github.com/velnias75/PandaCrossing/issues",
-    "sources": "https://github.com/velnias75/PandaCrossing"
+    "issues": "https://github.com/velnias75/AmazingMod/issues",
+    "sources": "https://github.com/velnias75/AmazingMod"
   },
 
   "license": "GPL-3.0-or-later",

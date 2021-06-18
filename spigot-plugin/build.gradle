@@ -17,7 +17,9 @@ repositories {
 	
 }
 dependencies {
-	implementation 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+	implementation "org.spigotmc:spigot-api:${project.spigot_version}"
+	compileOnly "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
+	annotationProcessor "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
 	implementation project(':fabric-mod')
 	
 }
