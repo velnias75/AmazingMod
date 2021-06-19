@@ -19,7 +19,6 @@
 
 package de.rangun.amazing.spigot;
 
-
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.annotation.command.Command;
@@ -48,7 +47,7 @@ public class AmazingPlugin extends JavaPlugin {
 
 		if (mazeCommand != null) {
 
-			final MazeCommand cmd = new MazeCommand();
+			final MazeCommand cmd = MazeCommand.getInstance();
 
 			mazeCommand.setExecutor(cmd);
 			mazeCommand.setTabCompleter(cmd);
