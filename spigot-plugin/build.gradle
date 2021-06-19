@@ -1,6 +1,8 @@
 plugins {
-    id 'java-library' 
+    id 'java' 
 }
+
+apply plugin: 'java'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -9,17 +11,33 @@ archivesBaseName = 'AmazingPlugin'
 version = '0.0-SNAPSHOT'
 
 repositories {
+	mavenLocal()
+
 	maven {
-		name 'Spigot'
-		url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+		name = 'Spigot'
+		url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+		
+		content {
+			includeGroup 'org.bukkit'
+			includeGroup 'org.spigotmc'
+    	}
 	}
-	mavenCentral()
 	
+	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+  	maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+	
+	mavenCentral()
 }
+
 dependencies {
-	implementation "org.spigotmc:spigot-api:${project.spigot_version}"
+
+	compileOnly "org.spigotmc:spigot-api:${project.spigot_version}"
 	compileOnly "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
 	annotationProcessor "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
+	
+	compileOnly "com.google.code.findbugs:annotations:${project.findbugs_version}"
+	annotationProcessor "com.google.code.findbugs:annotations:${project.findbugs_version}"
+	
 	implementation project(':fabric-mod')
 }
 
