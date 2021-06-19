@@ -1,7 +1,9 @@
 plugins {
-    id 'java' 
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -32,18 +34,24 @@ repositories {
 dependencies {
 
 	compileOnly "org.spigotmc:spigot-api:${project.spigot_version}"
-	compileOnly "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
+
+	compileOnly("org.spigotmc:plugin-annotations:${project.plugins_annotation_version}") {
+		exclude module: "bukkit"
+	}
 	annotationProcessor "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
 	
 	compileOnly "com.google.code.findbugs:annotations:${project.findbugs_version}"
 	annotationProcessor "com.google.code.findbugs:annotations:${project.findbugs_version}"
 	
-	implementation project(':fabric-mod')
-	
+	implementation project(':shared')
+	shadow project(':shared')
 }
 
-jar {
-    //from project.sourceSets.main.allSource
-    from project(":fabric-mod").sourceSets.main.java.srcDirs
-    exclude 'de/rangun/amazing/fabric/**'
+shadowJar {
+   archiveClassifier.set('')
+   minimize()
+}
+
+assemble {
+	dependsOn shadowJar
 }

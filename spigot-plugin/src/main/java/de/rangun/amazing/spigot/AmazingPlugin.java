@@ -19,7 +19,11 @@
 
 package de.rangun.amazing.spigot;
 
+
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.annotation.command.Command;
+import org.bukkit.plugin.java.annotation.command.Commands;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
 import org.bukkit.plugin.java.annotation.plugin.ApiVersion.Target;
 import org.bukkit.plugin.java.annotation.plugin.Description;
@@ -27,15 +31,27 @@ import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.Website;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 
+import de.rangun.amazing.spigot.commands.MazeCommand;
+
 @Plugin(name = "AmazingPlugin", version = "0.0-SNAPSHOT")
 @Description(value = "A plugin to generate mazes")
 @Website(value = "https://github.com/velnias75/AmazingModo")
 @ApiVersion(Target.v1_16)
 @Author(value = "Velnias75")
+@Commands(@Command(name = "maze", desc = "generates a maze", usage = "/maze <width> <length> <height> <material>"))
 public class AmazingPlugin extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		super.onEnable();
+
+		final PluginCommand mazeCommand = this.getCommand("maze");
+
+		if (mazeCommand != null) {
+
+			final MazeCommand cmd = new MazeCommand();
+
+			mazeCommand.setExecutor(cmd);
+			mazeCommand.setTabCompleter(cmd);
+		}
 	}
 }
