@@ -19,12 +19,23 @@ import de.rangun.amazing.maze.Maze;
 
 public class MazeCommand implements CommandExecutor, TabCompleter {
 
+	private static MazeCommand instance;
+
 	private final static List<String> materials = new ArrayList<>(Material.values().length);
 
-	public MazeCommand() {
+	private MazeCommand() {
 		for (final Material m : Material.values()) {
 			materials.add(m.getKey().toString());
 		}
+	}
+
+	public static synchronized MazeCommand getInstance() {
+
+		if (instance == null) {
+			instance = new MazeCommand();
+		}
+
+		return instance;
 	}
 
 	@Override
