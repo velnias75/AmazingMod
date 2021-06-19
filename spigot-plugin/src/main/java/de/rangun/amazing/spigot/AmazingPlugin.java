@@ -30,7 +30,7 @@ import org.bukkit.plugin.java.annotation.plugin.author.Author;
 @Plugin(name = "AmazingPlugin", version = "0.0-SNAPSHOT")
 @Description(value = "A plugin to generate mazes")
 @Website(value = "https://github.com/velnias75/AmazingModo")
-@ApiVersion(Target.DEFAULT)
+@ApiVersion(Target.v1_16)
 @Author(value = "Velnias75")
 public class AmazingPlugin extends JavaPlugin {
 
