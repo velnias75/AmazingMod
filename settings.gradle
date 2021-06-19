@@ -8,4 +8,4 @@ pluginManagement {
     }
 }
 
-include 'fabric-mod', 'spigot-plugin'
+include 'shared', 'fabric-mod', 'spigot-plugin'
