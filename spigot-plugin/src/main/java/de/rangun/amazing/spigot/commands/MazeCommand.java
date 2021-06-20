@@ -15,6 +15,8 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
+import de.rangun.amazing.maze.IMazeTraverser.Type;
+import de.rangun.amazing.maze.IPattern;
 import de.rangun.amazing.maze.Maze;
 
 public class MazeCommand implements CommandExecutor, TabCompleter {
@@ -59,14 +61,47 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 						final Maze maze = new Maze(width, length);
 						final Location pos = player.getLocation();
 						final World world = player.getWorld();
-						
-						maze.generate((x, y, b) -> {
+
+						final IPattern<Material> groundPattern = new IPattern<Material>() {
+
+							@Override
+							public Material materialAt(final int x, final int y) {
+								return mat;
+							}
+						};
+
+						final IPattern<Material> wallPattern = new IPattern<Material>() {
+
+							@Override
+							public Material materialAt(final int x, final int y) {
+								return mat;
+							}
+						};
+
+						final IPattern<Material> holePattern = new IPattern<Material>() {
+
+							@Override
+							public Material materialAt(int x, int y) {
+								return Material.AIR;
+							}
+						};
+
+						maze.generate((x, y, material, type) -> {
 
 							for (int i = 0; i < height; ++i) {
-								world.getBlockAt(pos.getBlockX() + x, pos.getBlockY() + i, pos.getBlockZ() + y)
-										.setType(b ? mat : Material.AIR);
+
+								if ((i == 0 && (type == Type.GROUND || type == Type.WALL || type == Type.HOLE))
+										|| (i > 0 && type != Type.GROUND)) {
+									world.getBlockAt(pos.getBlockX() + x, pos.getBlockY() + i, pos.getBlockZ() + y)
+											.setType(material);
+								} else if (i > 0 && type == Type.GROUND) {
+									world.getBlockAt(pos.getBlockX() + x, pos.getBlockY() + i, pos.getBlockZ() + y)
+											.setType(Material.AIR);
+
+								}
 							}
-						});
+
+						}, groundPattern, wallPattern, holePattern);
 
 					} else {
 						sender.sendMessage("No such material \"" + mat + "\"");

@@ -21,6 +21,8 @@ package de.rangun.amazing.maze;
 
 import java.util.Random;
 
+import de.rangun.amazing.maze.IMazeTraverser.Type;
+
 public final class Maze {
 
 	private static enum ORIENTATION {
@@ -46,23 +48,30 @@ public final class Maze {
 		}
 	}
 
-	public void generate(final IMazeTraverser traverser) {
+	public <M> void generate(final IMazeTraverser<M> traverser, final IPattern<M> groundPattern,
+			final IPattern<M> wallPattern, final IPattern<M> holePattern) {
 
-		divide(0, 0, width, height, chooseOrientation(width, height), traverser);
+		for (int x = 1; x < (width - 1); ++x) {
+			for (int y = 1; y < (height - 1); ++y) {
+				traverser.at(x, y, groundPattern.materialAt(x, y), Type.GROUND);
+			}
+		}
+
+		divide(0, 0, width, height, chooseOrientation(width, height), traverser, wallPattern, holePattern);
 
 		for (int i = 0; i < width; ++i) {
-			traverser.at(i, 0, true);
-			traverser.at(i, height - 1, true);
+			traverser.at(i, 0, wallPattern.materialAt(i, 0), Type.WALL);
+			traverser.at(i, height - 1, wallPattern.materialAt(i, height - 1), Type.WALL);
 		}
 
 		for (int i = 0; i < height; ++i) {
-			traverser.at(0, i, true);
-			traverser.at(width - 1, i, true);
+			traverser.at(0, i, wallPattern.materialAt(0, i), Type.WALL);
+			traverser.at(width - 1, i, wallPattern.materialAt(width - 1, i), Type.WALL);
 		}
 	};
 
-	private void divide(final int x, final int y, final int width, final int height, final ORIENTATION orientation,
-			IMazeTraverser t) {
+	private <M> void divide(final int x, final int y, final int width, final int height, final ORIENTATION orientation,
+			IMazeTraverser<M> traverser, IPattern<M> wallPattern, final IPattern<M> holePattern) {
 
 		final int width_new;
 		final int height_new;
@@ -80,10 +89,10 @@ public final class Maze {
 			final int hole = x + rnd.nextInt(Math.max(1, width - 3)) + 1;
 
 			for (int i = 0; i < width; ++i) {
-				t.at(x + i, wall, true);
+				traverser.at(x + i, wall, wallPattern.materialAt(x + 1, wall), Type.WALL);
 			}
-			
-			t.at(hole, wall, false);
+
+			traverser.at(hole, wall, holePattern.materialAt(hole, wall), Type.HOLE);
 
 			width_new = width;
 			height_new = wall - y + 1;
@@ -102,10 +111,10 @@ public final class Maze {
 			final int hole = y + rnd.nextInt(Math.max(1, height - 3)) + 1;
 
 			for (int i = 0; i < height; ++i) {
-				t.at(wall, y + 1, true);
+				traverser.at(wall, y + 1, wallPattern.materialAt(wall, y + 1), Type.WALL);
 			}
 
-			t.at(wall, hole, false);
+			traverser.at(wall, hole, holePattern.materialAt(wall, hole), Type.HOLE);
 
 			width_new = wall - x + 1;
 			height_new = height;
@@ -116,8 +125,10 @@ public final class Maze {
 			height_new_pair = height;
 		}
 
-		divide(x, y, width_new, height_new, chooseOrientation(width_new, height_new), t);
-		divide(x_pair, y_pair, width_new_pair, height_new_pair, chooseOrientation(width_new_pair, height_new_pair), t);
+		divide(x, y, width_new, height_new, chooseOrientation(width_new, height_new), traverser, wallPattern,
+				holePattern);
+		divide(x_pair, y_pair, width_new_pair, height_new_pair, chooseOrientation(width_new_pair, height_new_pair),
+				traverser, wallPattern, holePattern);
 	}
 
 	private ORIENTATION chooseOrientation(final int width, final int height) {

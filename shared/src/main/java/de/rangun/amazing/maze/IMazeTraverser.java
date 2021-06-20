@@ -19,7 +19,14 @@
 
 package de.rangun.amazing.maze;
 
+import javax.annotation.Nonnull;
+
 @FunctionalInterface
-public interface IMazeTraverser {
-	void at(int x, int z, boolean wall);
+public interface IMazeTraverser<M> {
+
+	static enum Type {
+		GROUND, WALL, HOLE
+	};
+
+	void at(int x, int y, @Nonnull M material, Type type);
 }
