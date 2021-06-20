@@ -21,25 +21,23 @@ package de.rangun.amazing.fabric.commands;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static net.minecraft.block.Blocks.AIR;
-import static net.minecraft.block.Blocks.OAK_PLANKS;
 import static net.minecraft.command.argument.BlockStateArgumentType.getBlockState;
-
-import javax.annotation.Nonnull;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import de.rangun.amazing.maze.IMazeTraverser.Type;
+import de.rangun.amazing.maze.IBlockPlacer;
 import de.rangun.amazing.maze.IPattern;
 import de.rangun.amazing.maze.Maze;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-public final class MazeCommand implements Command<ServerCommandSource> {
+public final class MazeCommand implements Command<ServerCommandSource>, IBlockPlacer<ServerWorld, BlockState, Double> {
 
 	@Override
 	public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
@@ -55,7 +53,6 @@ public final class MazeCommand implements Command<ServerCommandSource> {
 		final IPattern<BlockState> groundPattern = new IPattern<BlockState>() {
 
 			@Override
-			@Nonnull
 			public BlockState materialAt(final int x, final int y) {
 				return blockState.getBlockState();
 			}
@@ -64,37 +61,29 @@ public final class MazeCommand implements Command<ServerCommandSource> {
 		final IPattern<BlockState> wallPattern = new IPattern<BlockState>() {
 
 			@Override
-			@Nonnull
 			public BlockState materialAt(final int x, final int y) {
-				return OAK_PLANKS.getDefaultState();
+				return blockState.getBlockState();
 			}
 		};
 
 		final IPattern<BlockState> holePattern = new IPattern<BlockState>() {
 
 			@Override
-			@Nonnull
 			public BlockState materialAt(final int x, final int y) {
 				return AIR.getDefaultState();
 			}
 		};
 
-		maze.generate((x, y, mat, type) -> {
-
-			for (int i = 0; i < height; ++i) {
-
-				if ((i == 0 && (type == Type.GROUND || type == Type.WALL || type == Type.HOLE))
-						|| (i > 0 && type != Type.GROUND)) {
-					context.getSource().getWorld()
-							.setBlockState(new BlockPos(pos.getX() + x, pos.getY() + i, pos.getZ() + y), mat);
-				} else if (i > 0 && type == Type.GROUND) {
-					context.getSource().getWorld().setBlockState(
-							new BlockPos(pos.getX() + x, pos.getY() + i, pos.getZ() + y), AIR.getDefaultState());
-				}
-			}
-
-		}, groundPattern, wallPattern, holePattern);
+		maze.generate(this, context.getSource().getWorld(), pos.getX(), pos.getY(), pos.getZ(), height,
+				AIR.getDefaultState(), groundPattern, wallPattern, holePattern);
 
 		return Command.SINGLE_SUCCESS;
+	}
+
+	@Override
+	public void placeBlock(final ServerWorld world, final Double playerX, final Double playerY, final Double playerZ,
+			final int x, final int y, final int height, final BlockState material) {
+
+		world.setBlockState(new BlockPos(playerX + x, playerY + height, playerZ + y), material);
 	}
 }

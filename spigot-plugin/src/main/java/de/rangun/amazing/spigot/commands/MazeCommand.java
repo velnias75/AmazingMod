@@ -17,14 +17,13 @@ import org.bukkit.entity.Player;
 
 import com.google.common.collect.Collections2;
 
-import de.rangun.amazing.maze.IMazeTraverser.Type;
+import de.rangun.amazing.maze.IBlockPlacer;
 import de.rangun.amazing.maze.IPattern;
 import de.rangun.amazing.maze.Maze;
 
-public class MazeCommand implements CommandExecutor, TabCompleter {
+public class MazeCommand implements CommandExecutor, TabCompleter, IBlockPlacer<World, Material, Integer> {
 
 	private static MazeCommand instance;
-
 	private final static List<String> materials = new ArrayList<>(Material.values().length);
 
 	private MazeCommand() {
@@ -88,22 +87,8 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 							}
 						};
 
-						maze.generate((x, y, material, type) -> {
-
-							for (int i = 0; i < height; ++i) {
-
-								if ((i == 0 && (type == Type.GROUND || type == Type.WALL || type == Type.HOLE))
-										|| (i > 0 && type != Type.GROUND)) {
-									world.getBlockAt(pos.getBlockX() + x, pos.getBlockY() + i, pos.getBlockZ() + y)
-											.setType(material);
-								} else if (i > 0 && type == Type.GROUND) {
-									world.getBlockAt(pos.getBlockX() + x, pos.getBlockY() + i, pos.getBlockZ() + y)
-											.setType(Material.AIR);
-
-								}
-							}
-
-						}, groundPattern, wallPattern, holePattern);
+						maze.generate(this, world, pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), height,
+								Material.AIR, groundPattern, wallPattern, holePattern);
 
 					} else {
 						sender.sendMessage("No such material \"" + mat + "\"");
@@ -122,6 +107,13 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 		}
 
 		return true;
+	}
+
+	@Override
+	public void placeBlock(final World world, final Integer playerX, final Integer playerY, final Integer playerZ,
+			final int x, final int y, final int height, final Material material) {
+
+		world.getBlockAt(playerX + x, playerY + height, playerZ + y).setType(material);
 	}
 
 	private int getIntegerArg(final String arg, final String name, final CommandSender sender)
@@ -146,5 +138,4 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 
 		return null;
 	}
-
 }

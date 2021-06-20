@@ -22,7 +22,7 @@ package de.rangun.amazing.maze;
 import javax.annotation.Nonnull;
 
 @FunctionalInterface
-public interface IMazeTraverser<M> {
+interface IMazeTraverser<M> {
 
 	static enum Type {
 		GROUND, WALL, HOLE

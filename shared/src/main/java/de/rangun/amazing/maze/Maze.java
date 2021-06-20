@@ -48,7 +48,15 @@ public final class Maze {
 		}
 	}
 
-	public <M> void generate(final IMazeTraverser<M> traverser, final IPattern<M> groundPattern,
+	public <W, M, N extends Number> void generate(final IBlockPlacer<W, M, N> blockPlacer, final W world,
+			final N playerX, final N playerY, final N playerZ, final int height, M air, final IPattern<M> groundPattern,
+			final IPattern<M> wallPattern, final IPattern<M> holePattern) {
+
+		create((x, y, material, type) -> erect(world, blockPlacer, playerX, playerY, playerZ, height, x, y, material,
+				air, type), groundPattern, wallPattern, holePattern);
+	}
+
+	private <M> void create(final IMazeTraverser<M> traverser, final IPattern<M> groundPattern,
 			final IPattern<M> wallPattern, final IPattern<M> holePattern) {
 
 		for (int x = 1; x < (width - 1); ++x) {
@@ -69,6 +77,21 @@ public final class Maze {
 			traverser.at(width - 1, i, wallPattern.materialAt(width - 1, i), Type.WALL);
 		}
 	};
+
+	private <W, M, N extends Number> void erect(final W world, final IBlockPlacer<W, M, N> blockPlacer, final N playerX,
+			final N playerY, final N playerZ, final int height, final int x, final int y, final M material, M air,
+			final Type type) {
+
+		for (int h = 0; h < height; ++h) {
+
+			if ((h == 0 && (type == Type.GROUND || type == Type.WALL || type == Type.HOLE))
+					|| (h > 0 && type != Type.GROUND)) {
+				blockPlacer.placeBlock(world, playerX, playerY, playerZ, x, y, h, material);
+			} else if (h > 0 && type == Type.GROUND) {
+				blockPlacer.placeBlock(world, playerX, playerY, playerZ, x, y, h, air);
+			}
+		}
+	}
 
 	private <M> void divide(final int x, final int y, final int width, final int height, final ORIENTATION orientation,
 			IMazeTraverser<M> traverser, IPattern<M> wallPattern, final IPattern<M> holePattern) {
