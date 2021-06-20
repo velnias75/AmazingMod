@@ -1,5 +1,6 @@
 package de.rangun.amazing.spigot.commands;
 
+import static java.util.stream.Collectors.toList;
 import static org.bukkit.Bukkit.getLogger;
 
 import java.util.ArrayList;
@@ -13,7 +14,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
+
+import com.google.common.collect.Collections2;
 
 import de.rangun.amazing.maze.IMazeTraverser.Type;
 import de.rangun.amazing.maze.IPattern;
@@ -138,8 +140,8 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 			final String[] args) {
 
 		if (args.length == 4) {
-			final List<String> completions = new ArrayList<>(materials.size());
-			return StringUtil.copyPartialMatches(args[3], materials, completions);
+			return Collections2.filter(materials, item -> item.toLowerCase().contains(args[3].toLowerCase())).stream()
+					.collect(toList());
 		}
 
 		return null;
