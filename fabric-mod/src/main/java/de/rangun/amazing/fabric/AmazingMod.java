@@ -52,12 +52,9 @@ public final class AmazingMod implements ClientModInitializer {
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispather,
-				dedicated) ->
-		dispather.register(literal("maze").then(
-				argument("width", integer()).then(argument("length", integer())
-						.then(argument("height", integer())
-								.then(argument("material", blockState())
-								.executes(new MazeCommand())))))));
+				dedicated) -> dispather.register(literal("maze").then(argument("width", integer())
+						.then(argument("length", integer()).then(argument("height", integer())
+								.then(argument("material", blockState()).executes(new MazeCommand())))))));
 	}
 
 	private static <T> RequiredArgumentBuilder<ServerCommandSource, T> argument(String name, ArgumentType<T> type) {

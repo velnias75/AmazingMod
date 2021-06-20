@@ -6,3 +6,12 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = 'AmazingShared'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compileOnly "com.google.code.findbugs:annotations:${project.findbugs_version}"
+	annotationProcessor "com.google.code.findbugs:annotations:${project.findbugs_version}"
+}

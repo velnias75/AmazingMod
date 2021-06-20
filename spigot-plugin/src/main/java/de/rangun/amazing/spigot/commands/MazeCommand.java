@@ -1,5 +1,6 @@
 package de.rangun.amazing.spigot.commands;
 
+import static java.util.stream.Collectors.toList;
 import static org.bukkit.Bukkit.getLogger;
 
 import java.util.ArrayList;
@@ -13,14 +14,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.util.StringUtil;
 
+import com.google.common.collect.Collections2;
+
+import de.rangun.amazing.maze.IBlockPlacer;
+import de.rangun.amazing.maze.IPattern;
 import de.rangun.amazing.maze.Maze;
 
-public class MazeCommand implements CommandExecutor, TabCompleter {
+public class MazeCommand implements CommandExecutor, TabCompleter, IBlockPlacer<World, Material, Integer> {
 
 	private static MazeCommand instance;
-
 	private final static List<String> materials = new ArrayList<>(Material.values().length);
 
 	private MazeCommand() {
@@ -59,14 +62,33 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 						final Maze maze = new Maze(width, length);
 						final Location pos = player.getLocation();
 						final World world = player.getWorld();
-						
-						maze.generate((x, y, b) -> {
 
-							for (int i = 0; i < height; ++i) {
-								world.getBlockAt(pos.getBlockX() + x, pos.getBlockY() + i, pos.getBlockZ() + y)
-										.setType(b ? mat : Material.AIR);
+						final IPattern<Material> groundPattern = new IPattern<Material>() {
+
+							@Override
+							public Material materialAt(final int x, final int y) {
+								return mat;
 							}
-						});
+						};
+
+						final IPattern<Material> wallPattern = new IPattern<Material>() {
+
+							@Override
+							public Material materialAt(final int x, final int y) {
+								return mat;
+							}
+						};
+
+						final IPattern<Material> holePattern = new IPattern<Material>() {
+
+							@Override
+							public Material materialAt(int x, int y) {
+								return Material.AIR;
+							}
+						};
+
+						maze.generate(this, world, pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), height,
+								Material.AIR, groundPattern, wallPattern, holePattern);
 
 					} else {
 						sender.sendMessage("No such material \"" + mat + "\"");
@@ -87,6 +109,13 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 		return true;
 	}
 
+	@Override
+	public void placeBlock(final World world, final Integer playerX, final Integer playerY, final Integer playerZ,
+			final int x, final int y, final int height, final Material material) {
+
+		world.getBlockAt(playerX + x, playerY + height, playerZ + y).setType(material);
+	}
+
 	private int getIntegerArg(final String arg, final String name, final CommandSender sender)
 			throws NumberFormatException {
 
@@ -103,11 +132,10 @@ public class MazeCommand implements CommandExecutor, TabCompleter {
 			final String[] args) {
 
 		if (args.length == 4) {
-			final List<String> completions = new ArrayList<>(materials.size());
-			return StringUtil.copyPartialMatches(args[3], materials, completions);
+			return Collections2.filter(materials, item -> item.toLowerCase().contains(args[3].toLowerCase())).stream()
+					.collect(toList());
 		}
 
 		return null;
 	}
-
 }
