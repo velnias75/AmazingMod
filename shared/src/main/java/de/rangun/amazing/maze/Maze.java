@@ -35,7 +35,13 @@ public final class Maze {
 	private final int height;
 	private final boolean[][] grid;
 
-	public Maze(int width, int height) {
+	public Maze(int width, int height) throws IllegalArgumentException {
+
+		if (width % 2 == 0)
+			throw new IllegalArgumentException("<width> must be an odd number");
+
+		if (height % 2 == 0)
+			throw new IllegalArgumentException("<height> must be an odd number");
 
 		this.width = width;
 		this.height = height;

@@ -59,36 +59,42 @@ public class MazeCommand implements CommandExecutor, TabCompleter, IBlockPlacer<
 
 					if (mat != null) {
 
-						final Maze maze = new Maze(width, length);
-						final Location pos = player.getLocation();
-						final World world = player.getWorld();
+						try {
 
-						final IPattern<Material> groundPattern = new IPattern<Material>() {
+							final Maze maze = new Maze(width, length);
+							final Location pos = player.getLocation();
+							final World world = player.getWorld();
 
-							@Override
-							public Material materialAt(final int x, final int y) {
-								return mat;
-							}
-						};
+							final IPattern<Material> groundPattern = new IPattern<Material>() {
 
-						final IPattern<Material> wallPattern = new IPattern<Material>() {
+								@Override
+								public Material materialAt(final int x, final int y) {
+									return mat;
+								}
+							};
 
-							@Override
-							public Material materialAt(final int x, final int y) {
-								return mat;
-							}
-						};
+							final IPattern<Material> wallPattern = new IPattern<Material>() {
 
-						final IPattern<Material> holePattern = new IPattern<Material>() {
+								@Override
+								public Material materialAt(final int x, final int y) {
+									return mat;
+								}
+							};
 
-							@Override
-							public Material materialAt(int x, int y) {
-								return Material.AIR;
-							}
-						};
+							final IPattern<Material> holePattern = new IPattern<Material>() {
 
-						maze.generate(this, world, pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), height,
-								Material.AIR, groundPattern, wallPattern, holePattern);
+								@Override
+								public Material materialAt(int x, int y) {
+									return Material.AIR;
+								}
+							};
+
+							maze.generate(this, world, pos.getBlockX(), pos.getBlockY(), pos.getBlockZ(), height,
+									Material.AIR, groundPattern, wallPattern, holePattern);
+
+						} catch (IllegalArgumentException e) {
+							sender.sendMessage(e.getMessage());
+						}
 
 					} else {
 						sender.sendMessage("No such material \"" + mat + "\"");
