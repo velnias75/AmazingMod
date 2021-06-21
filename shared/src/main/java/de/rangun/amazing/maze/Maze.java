@@ -93,6 +93,10 @@ public final class Maze {
 		}
 	}
 
+	private static int randomInt(final int min, int max, boolean even) {
+		return ((int) (Math.floor(Math.min(max, (rnd.nextInt(max + 1) + min)) / 2.0d) * 2.0d)) + (even ? 0 : 1);
+	}
+
 	private <M> void divide(final int x, final int y, final int width, final int height, final ORIENTATION orientation,
 			IMazeTraverser<M> traverser, IPattern<M> wallPattern, final IPattern<M> holePattern) {
 
@@ -108,8 +112,8 @@ public final class Maze {
 			if (5 > height)
 				return;
 
-			final int wall = y + rnd.nextInt(height - 4) + 2;
-			final int hole = x + rnd.nextInt(Math.max(1, width - 3)) + 1;
+			final int wall = y + randomInt(2, height - 3, true);
+			final int hole = x + randomInt(1, width - 2, false);
 
 			for (int i = 0; i < width; ++i) {
 				traverser.at(x + i, wall, wallPattern.materialAt(x + 1, wall), Type.WALL);
@@ -130,8 +134,8 @@ public final class Maze {
 			if (5 > width)
 				return;
 
-			final int wall = x + rnd.nextInt(width - 4) + 2;
-			final int hole = y + rnd.nextInt(Math.max(1, height - 3)) + 1;
+			final int wall = x + randomInt(2, width - 3, true);
+			final int hole = y + randomInt(1, height - 2, false);
 
 			for (int i = 0; i < height; ++i) {
 				traverser.at(wall, y + 1, wallPattern.materialAt(wall, y + 1), Type.WALL);
@@ -152,6 +156,7 @@ public final class Maze {
 				holePattern);
 		divide(x_pair, y_pair, width_new_pair, height_new_pair, chooseOrientation(width_new_pair, height_new_pair),
 				traverser, wallPattern, holePattern);
+
 	}
 
 	private ORIENTATION chooseOrientation(final int width, final int height) {
