@@ -4,5 +4,5 @@ import javax.annotation.Nonnull;
 
 public interface IPattern<M> {
 	@Nonnull
-	M materialAt(int x, int y);
+	M materialAt(int x, int y, int h);
 }

@@ -34,6 +34,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -46,36 +47,51 @@ public final class MazeCommand implements Command<ServerCommandSource>, IBlockPl
 		final int length = getInteger(context, "length");
 		final int height = getInteger(context, "height");
 		final BlockStateArgument blockState = getBlockState(context, "material");
-
-		final Maze maze = new Maze(width, length);
 		final Vec3d pos = context.getSource().getPlayer().getPos();
 
-		final IPattern<BlockState> groundPattern = new IPattern<BlockState>() {
+		final Runnable t = new Runnable() {
 
 			@Override
-			public BlockState materialAt(final int x, final int y) {
-				return blockState.getBlockState();
+			public void run() {
+
+				try {
+
+					final Maze maze = new Maze(width, length);
+
+					final IPattern<BlockState> groundPattern = new IPattern<BlockState>() {
+
+						@Override
+						public BlockState materialAt(final int x, final int y, final int h) {
+							return blockState.getBlockState();
+						}
+					};
+
+					final IPattern<BlockState> wallPattern = new IPattern<BlockState>() {
+
+						@Override
+						public BlockState materialAt(final int x, final int y, final int h) {
+							return blockState.getBlockState();
+						}
+					};
+
+					final IPattern<BlockState> holePattern = new IPattern<BlockState>() {
+
+						@Override
+						public BlockState materialAt(final int x, final int y, final int h) {
+							return h == 0 ? blockState.getBlockState() : AIR.getDefaultState();
+						}
+					};
+
+					maze.generate(MazeCommand.this, context.getSource().getWorld(), pos.getX(), pos.getY(), pos.getZ(),
+							height, AIR.getDefaultState(), groundPattern, wallPattern, holePattern);
+
+				} catch (IllegalArgumentException e) {
+					context.getSource().sendError(new LiteralText(e.getMessage()));
+				}
 			}
 		};
 
-		final IPattern<BlockState> wallPattern = new IPattern<BlockState>() {
-
-			@Override
-			public BlockState materialAt(final int x, final int y) {
-				return blockState.getBlockState();
-			}
-		};
-
-		final IPattern<BlockState> holePattern = new IPattern<BlockState>() {
-
-			@Override
-			public BlockState materialAt(final int x, final int y) {
-				return AIR.getDefaultState();
-			}
-		};
-
-		maze.generate(this, context.getSource().getWorld(), pos.getX(), pos.getY(), pos.getZ(), height,
-				AIR.getDefaultState(), groundPattern, wallPattern, holePattern);
+		(new Thread(t)).start();
 
 		return Command.SINGLE_SUCCESS;
 	}
