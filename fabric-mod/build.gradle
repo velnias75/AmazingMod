@@ -203,6 +203,12 @@ assemble {
 	dependsOn remapShadowJar
 }
 
+tasks.withType(JavaExec) {
+    if (System.getProperty('DEBUG', 'false') == 'true') {
+        jvmArgs '-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=y,suspend=n'
+    }
+}
+
 // configure the maven publication
 publishing {
 	publications {
