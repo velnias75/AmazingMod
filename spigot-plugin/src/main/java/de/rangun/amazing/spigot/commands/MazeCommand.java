@@ -68,7 +68,7 @@ public class MazeCommand implements CommandExecutor, TabCompleter, IBlockPlacer<
 							final IPattern<Material> groundPattern = new IPattern<Material>() {
 
 								@Override
-								public Material materialAt(final int x, final int y) {
+								public Material materialAt(final int x, final int y, final int h) {
 									return mat;
 								}
 							};
@@ -76,7 +76,7 @@ public class MazeCommand implements CommandExecutor, TabCompleter, IBlockPlacer<
 							final IPattern<Material> wallPattern = new IPattern<Material>() {
 
 								@Override
-								public Material materialAt(final int x, final int y) {
+								public Material materialAt(final int x, final int y, final int h) {
 									return mat;
 								}
 							};
@@ -84,8 +84,8 @@ public class MazeCommand implements CommandExecutor, TabCompleter, IBlockPlacer<
 							final IPattern<Material> holePattern = new IPattern<Material>() {
 
 								@Override
-								public Material materialAt(int x, int y) {
-									return Material.AIR;
+								public Material materialAt(int x, int y, final int h) {
+									return h == 0 ? mat : Material.AIR;
 								}
 							};
 

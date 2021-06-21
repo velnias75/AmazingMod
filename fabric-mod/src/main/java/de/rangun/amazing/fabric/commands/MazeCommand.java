@@ -61,7 +61,7 @@ public final class MazeCommand implements Command<ServerCommandSource>, IBlockPl
 					final IPattern<BlockState> groundPattern = new IPattern<BlockState>() {
 
 						@Override
-						public BlockState materialAt(final int x, final int y) {
+						public BlockState materialAt(final int x, final int y, final int h) {
 							return blockState.getBlockState();
 						}
 					};
@@ -69,7 +69,7 @@ public final class MazeCommand implements Command<ServerCommandSource>, IBlockPl
 					final IPattern<BlockState> wallPattern = new IPattern<BlockState>() {
 
 						@Override
-						public BlockState materialAt(final int x, final int y) {
+						public BlockState materialAt(final int x, final int y, final int h) {
 							return blockState.getBlockState();
 						}
 					};
@@ -77,8 +77,8 @@ public final class MazeCommand implements Command<ServerCommandSource>, IBlockPl
 					final IPattern<BlockState> holePattern = new IPattern<BlockState>() {
 
 						@Override
-						public BlockState materialAt(final int x, final int y) {
-							return AIR.getDefaultState();
+						public BlockState materialAt(final int x, final int y, final int h) {
+							return h == 0 ? blockState.getBlockState() : AIR.getDefaultState();
 						}
 					};
 
